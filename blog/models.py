@@ -59,7 +59,8 @@ class Comment(models.Model):
     post = models.ForeignKey(
         'Post',
         on_delete=models.CASCADE,
-        verbose_name='Пост, к которому написан')
+        verbose_name='Пост, к которому написан',
+        related_name='comments')
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -67,6 +68,7 @@ class Comment(models.Model):
 
     text = models.TextField('Текст комментария')
     published_at = models.DateTimeField('Дата и время публикации')
+    
 
     def __str__(self):
         return f'{self.author.username} under {self.post.title}'
