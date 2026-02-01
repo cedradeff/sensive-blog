@@ -4,15 +4,34 @@ from django.contrib.auth.models import User
 from django.db.models import Count
 
 
-class PostQuerySet(models.QuerySet):
-    def year(self, year):
-        return self.filter(published_at__year=year).order_by('published_at')
-
-
 class TagQuerySet(models.QuerySet):
     def popular(self):
         return self.annotate(posts_count=Count('posts')).order_by('-posts_count')
-    
+
+
+class PostQuerySet(models.QuerySet):
+
+    def year(self, year):
+        return self.filter(published_at__year=year).order_by('published_at')
+
+    def popular(self):
+        return self.annotate(likes_count=Count('likes')).order_by('-likes_count')
+
+    def fetch_with_comments_count(self):
+        post_ids = list(self.values_list('id', flat=True))
+        comments_counts = (
+            Post.objects
+            .filter(id__in=post_ids)
+            .annotate(comments_count=Count('comments'))
+            .values_list('id', 'comments_count')
+        )
+        comments_by_id = dict(comments_counts)
+
+        posts = list(self)
+        for post in posts:
+            post.comments_count = comments_by_id.get(post.id, 0)
+        return posts
+
 
 class Post(models.Model):
     title = models.CharField('Заголовок', max_length=200)
