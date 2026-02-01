@@ -6,6 +6,7 @@ from blog.models import Post, Tag, Comment
 class PostAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'published_at', 'likes_count', 'comments_count')
     raw_id_fields = ('author',)
+
     def likes_count(self, obj):
         return obj.likes.count()
     likes_count.short_description = 'Likes'
@@ -18,6 +19,7 @@ class PostAdmin(admin.ModelAdmin):
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = ('title', 'posts_count')
+
     def posts_count(self, obj):
         return obj.posts.count()
     posts_count.short_description = 'Posts'
