@@ -60,11 +60,11 @@ def index(request):
 
 
 def post_detail(request, slug):
-    post = (
+    post = get_object_or_404(
         Post.objects
         .select_related('author')
-        .prefetch_related(Prefetch('tags', to_attr='prefetched_tags'))
-        .get(slug=slug)
+        .prefetch_related(Prefetch('tags', to_attr='prefetched_tags')),
+        slug=slug
     )
 
     serialized_comments = [
