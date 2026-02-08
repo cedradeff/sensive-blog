@@ -63,7 +63,8 @@ def post_detail(request, slug):
     post = get_object_or_404(
         Post.objects
         .select_related('author')
-        .prefetch_related(Prefetch('tags', to_attr='prefetched_tags')),
+        .prefetch_related(Prefetch('tags', to_attr='prefetched_tags'))
+        .annotate(likes_count=Count('likes')),
         slug=slug
     )
 
@@ -80,7 +81,7 @@ def post_detail(request, slug):
         'text': post.text,
         'author': post.author.username,
         'comments': serialized_comments,
-        'likes_amount': post.likes.count(),
+        'likes_amount': getattr(post, 'likes_count', 0),
         'image_url': post.image.url if post.image else None,
         'published_at': post.published_at,
         'slug': post.slug,
