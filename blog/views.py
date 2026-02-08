@@ -119,15 +119,13 @@ def tag_filter(request, tag_title):
     )
 
     related_posts = (
-        tag.posts
-        .prefetch_related(
-            'author',
-            Prefetch('tags', to_attr='prefetched_tags')
-        )[:20]
+        Post.objects
+        .filter(tags=tag)
+        .select_related('author')
+        .prefetch_related(Prefetch('tags', to_attr='prefetched_tags'))
+        .fetch_with_comments_count()
+        [:20]
     )
-
-    for post in related_posts:
-        post.comments_count = post.comments.count()
 
     most_popular_posts = (
         Post.objects.popular()
