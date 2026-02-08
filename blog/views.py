@@ -32,9 +32,9 @@ def index(request):
         .prefetch_related(
             'author',
             Prefetch('tags', to_attr='prefetched_tags')
-        )[:5]
+        )
         .fetch_with_comments_count()
-    )
+    )[:5]
 
 
     most_fresh_posts = (
@@ -42,9 +42,9 @@ def index(request):
         .prefetch_related(
             'author',
             Prefetch('tags', to_attr='prefetched_tags')
-        )[:5]
+        )
         .fetch_with_comments_count()
-    )
+    )[:5]
 
     most_popular_tags = (
         Tag.objects.popular()
@@ -97,9 +97,9 @@ def post_detail(request, slug):
         .prefetch_related(
             'author',
             Prefetch('tags', to_attr='prefetched_tags')
-        )[:5]
+        )
         .fetch_with_comments_count()
-    )
+    )[:5]
 
     context = {
         'post': serialized_post,
@@ -133,9 +133,9 @@ def tag_filter(request, tag_title):
         .prefetch_related(
             'author',
             Prefetch('tags', to_attr='prefetched_tags')
-        )[:5]
+        )
         .fetch_with_comments_count()
-    )
+    )[:5]
 
     context = {
         'tag': tag.title,
