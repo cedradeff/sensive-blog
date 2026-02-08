@@ -4,7 +4,7 @@ from blog.models import Post, Tag, Comment
 
 
 def serialize_tag(tag):
-    posts_count = getattr(tag, 'posts_count', len(getattr(tag, 'prefetched_posts', [])))
+    posts_count = getattr(tag, 'posts_count', tag.posts.count())
     return {
         'title': tag.title,
         'posts_with_tag': posts_count,
